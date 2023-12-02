@@ -1,0 +1,59 @@
+import time
+start = time.time()
+
+# MODEL LOADING
+
+from diffusers import AutoPipelineForText2Image,AutoencoderKL
+import torch
+
+# vae fp16  loader
+# vae = AutoencoderKL.from_pretrained("madebyollin/sdxl-vae-fp16-fix", torch_dtype=torch.float16)
+
+# pipe = AutoPipelineForText2Image.from_pretrained("stabilityai/sdxl-turbo", vae=vae, torch_dtype=torch.float16, variant="fp16") # vae enable
+pipe = AutoPipelineForText2Image.from_pretrained("stabilityai/sdxl-turbo" , torch_dtype=torch.float16, variant="fp16")
+pipe.to("cuda")
+
+# torch pre compile
+# pipe.unet = torch.compile(pipe.unet, mode="reduce-overhead", fullgraph=True)
+
+load = time.time()
+
+# INIT GENERATION
+
+image = pipe(prompt="comic style car chase", num_inference_steps=1, guidance_scale=0.0).images[0]
+image.save(f"test.jpg")
+
+initial_generation = time.time()
+
+
+# BATCH GENERATION
+
+prompts = [ "A cinematic shot of a baby racoon wearing an intricate italian priest robe." ,
+            "A person celebrating with a finished puzzle" ,
+            "cute cat girl cooking ramen , insane detail , 4k",
+            "A majestic lion jumping from a big stone at night" ]
+
+'''
+# Batch Inference via pipeline
+image_arr = pipe(prompt=prompts, num_inference_steps=1, guidance_scale=0.0).images
+
+for i in range(len(image_arr)):
+    image_arr[i].save(f"test_{i}.jpg")
+'''
+
+for i in range(len(prompts)):
+    image = pipe(prompt=prompts[i], num_inference_steps=1, guidance_scale=0.0).images[0]
+    image.save(f"test_{i}.jpg")
+
+final_generation = time.time()
+
+total_time = final_generation - start
+calculated_load_time = load - start
+calculated_init_gen_time = initial_generation - load
+calculated_generation_per_img = (final_generation - initial_generation) / len(prompts)
+
+
+print(f"Total Time : {total_time}")
+print(f"Load Time : {calculated_load_time}")
+print(f"Init Gen Time : {calculated_init_gen_time}")
+print(f"Avg Gen Time : {calculated_generation_per_img}")
