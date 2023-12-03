@@ -3,18 +3,18 @@ start = time.time()
 
 # MODEL LOADING
 
-from diffusers import AutoPipelineForText2Image,AutoencoderKL
+from diffusers import AutoPipelineForText2Image,AutoencoderKL,AutoencoderTiny
 import torch
 
-# vae fp16  loader
-# vae = AutoencoderKL.from_pretrained("madebyollin/sdxl-vae-fp16-fix", torch_dtype=torch.float16)
-
-# pipe = AutoPipelineForText2Image.from_pretrained("stabilityai/sdxl-turbo", vae=vae, torch_dtype=torch.float16, variant="fp16") # vae enable
 pipe = AutoPipelineForText2Image.from_pretrained("stabilityai/sdxl-turbo" , torch_dtype=torch.float16, variant="fp16")
-pipe.to("cuda")
 
-# torch pre compile
+# pipe.upcast_vae()
+# pipe.vae = AutoencoderKL.from_pretrained("madebyollin/sdxl-vae-fp16-fix", torch_dtype=torch.float16)
+pipe.vae = AutoencoderTiny.from_pretrained("madebyollin/taesdxl", torch_dtype=torch.float16)
+
 # pipe.unet = torch.compile(pipe.unet, mode="reduce-overhead", fullgraph=True)
+
+pipe.to("cuda")
 
 load = time.time()
 
