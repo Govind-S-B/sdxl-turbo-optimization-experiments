@@ -15,9 +15,14 @@ pipe = load_model()
 
 st.title("Image Generator")
     
-input_prompt = st.text_input("What do you want to see")
-start = time.time()
-image = pipe(prompt=input_prompt, num_inference_steps=1, guidance_scale=0.0).images[0]
-stop = time.time()
-st.write(f"processing time : {stop-start}")
-st.image(image)
+
+with st.form("my_form"):
+    text_input = st.text_input("What do you want to see")
+    submit_button = st.form_submit_button("Submit")
+
+if submit_button:
+    start = time.time()
+    image = pipe(prompt=text_input, num_inference_steps=1, guidance_scale=0.0).images[0]
+    stop = time.time()
+    st.write(f"processing time : {stop-start}")
+    st.image(image)
