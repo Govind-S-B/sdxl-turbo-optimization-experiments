@@ -10,7 +10,9 @@ Windows 11 WSL Ubuntu , python 3.10
 
 Comfy UI SDXL Turbo Generation Speed averages at 2.5 second per image (without prompt caching)
 
-My Test Criterias distinguishes Total Time , Load Time for any modules , Init Gen Time , Avg Gen Time. For Avg Time calculation I test with 1 + 4 prompts
+My Test Criterias distinguishes Total Time , Load Time for any modules , Init Gen Time , Avg Gen Time.
+For Avg Time calculation I test with 1 + 4 prompts.
+I am not optimizing for memory footprint , just performance.
 
 ## Basic Diffuser Performance :
 
@@ -105,4 +107,18 @@ pipe.unet = torch.compile(pipe.unet, mode="reduce-overhead", fullgraph=True)
 
 Decrease in performance
 source : https://github.com/huggingface/blog/blob/main/simple_sdxl_optimizations.md#model-cpu-offloading
+
+General rule of thumb that if you can fit the model in memory , offloading is only going to cost you performance
+
+## VAE Slicing
+
+| Metric        | Run 1                   | Run 2                   | Run 3                   |
+|---------------|-------------------------|-------------------------|-------------------------|
+| Total Time    | 7.269654989242554       | 6.002238035202026       | 6.339429616928101       |
+| Load Time     | 5.831358909606934       | 4.8166186809539795      | 4.8016180992126465      |
+| Init Gen Time | 0.6312739849090576      | 0.6541228294372559      | 0.6929543018341064      |
+| Avg Gen Time  | 0.20175552368164062     | 0.13287413120269775     | 0.21121430397033691     |
+
+No Impact or Slight Decrease in performance , hard to gauge.
+source : https://github.com/huggingface/blog/blob/main/simple_sdxl_optimizations.md#slicing
 

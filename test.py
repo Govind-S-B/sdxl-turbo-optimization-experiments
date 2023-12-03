@@ -15,7 +15,9 @@ pipe.vae = AutoencoderTiny.from_pretrained("madebyollin/taesdxl", torch_dtype=to
 # pipe.unet = torch.compile(pipe.unet, mode="reduce-overhead", fullgraph=True)
 
 pipe.to("cuda")
+# pipe.enable_vae_slicing()
 # pipe.enable_model_cpu_offload()
+# pipe.enable_sequential_cpu_offload()
 
 load = time.time()
 
