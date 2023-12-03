@@ -88,8 +88,21 @@ pipe.vae = AutoencoderTiny.from_pretrained("madebyollin/taesdxl", torch_dtype=to
 | Init Gen Time | 68.40448021888733       | 57.36990666389465       | 57.89517068862915       |
 | Avg Gen Time  | 0.4712483286857605      | 0.2937542200088501      | 0.2808695435523987      |
 
-Too Slow nothing to gain
+Massive Decrease in init generation and 2x slower in avg gen time
 source : https://huggingface.co/docs/diffusers/using-diffusers/sdxl_turbo#speed-up-sdxl-turbo-even-more
 ```
 pipe.unet = torch.compile(pipe.unet, mode="reduce-overhead", fullgraph=True)
 ```
+
+## CPU Offloading
+
+| Metric        | Run 1                   | Run 2                   | Run 3                   |
+|---------------|-------------------------|-------------------------|-------------------------|
+| Total Time    | 17.635058403015137      | 16.957004070281982      | 16.976733684539795      |
+| Load Time     | 7.488234281539917       | 9.042913675308228       | 7.669692039489746       |
+| Init Gen Time | 2.28349232673645        | 2.0885674953460693      | 2.0610623359680176      |
+| Avg Gen Time  | 1.9658329486846924      | 1.4563807249069214      | 1.8114948272705078      |
+
+Decrease in performance
+source : https://github.com/huggingface/blog/blob/main/simple_sdxl_optimizations.md#model-cpu-offloading
+
