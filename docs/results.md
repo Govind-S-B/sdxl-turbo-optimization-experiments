@@ -122,3 +122,12 @@ General rule of thumb that if you can fit the model in memory , offloading is on
 No Impact or Slight Decrease in performance , hard to gauge.
 source : https://github.com/huggingface/blog/blob/main/simple_sdxl_optimizations.md#slicing
 
+## MORE TESTING CONCLUSIONS
+
+I tried all the optimizations listed in https://huggingface.co/docs/diffusers/optimization/opt_overview
+Including Xformers , Token Merging , Offloading . But none of them beats the base Tiny Encoder Optimization Benchmarks.
+I think it indicates some bottleneck deep within python thats causing the performance issue now and I have hit a bottleneck in what I could optimize,if anyone else wants to try out the optimizations in a different language like Rust I think that would be the way forward
+
+## Additional Notes :
+- I couldnt try out https://github.com/huggingface/blog/blob/main/simple_sdxl_optimizations.md#caching-computations since i couldnt figure out how to get the tokenizers and encoders for the model
+- Couldnt try out tracing UNet https://huggingface.co/docs/diffusers/optimization/memory#tracing

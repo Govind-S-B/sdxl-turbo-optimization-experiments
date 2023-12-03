@@ -1,4 +1,6 @@
 import time
+
+import tomesd
 start = time.time()
 
 # MODEL LOADING
@@ -13,11 +15,17 @@ pipe = AutoPipelineForText2Image.from_pretrained("stabilityai/sdxl-turbo" , torc
 pipe.vae = AutoencoderTiny.from_pretrained("madebyollin/taesdxl", torch_dtype=torch.float16)
 
 # pipe.unet = torch.compile(pipe.unet, mode="reduce-overhead", fullgraph=True)
+# pipe.unet.to(memory_format=torch.channels_last)
+
+# pipe.enable_xformers_memory_efficient_attention()
+
 
 pipe.to("cuda")
 # pipe.enable_vae_slicing()
 # pipe.enable_model_cpu_offload()
 # pipe.enable_sequential_cpu_offload()
+
+# tomesd.apply_patch(pipe, ratio=0.5)
 
 load = time.time()
 
@@ -33,7 +41,7 @@ initial_generation = time.time()
 
 prompts = [ "A cinematic shot of a baby racoon wearing an intricate italian priest robe." ,
             "A person celebrating with a finished puzzle" ,
-            "cute cat girl cooking ramen , insane detail , 4k",
+            "Astronaut in a jungle, cold color palette, muted colors, detailed, 8k",
             "A majestic lion jumping from a big stone at night" ]
 
 '''
